@@ -19,9 +19,9 @@ import random
 import threading
 from xml.dom.minidom import parse
 import xbmcgui
-from . import exifreadvfs
-from .iptcinfovfs import IPTCInfo
-from .utils import *
+import lib.exifreadvfs
+from lib.iptcinfovfs import IPTCInfo
+from lib.utils import *
 
 ADDON = xbmcaddon.Addon()
 SKINDIR = xbmc.getSkinDir()
