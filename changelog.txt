@@ -1,3 +1,6 @@
+v6.1.0
+- update exif, iptc and xmp data parsers
+
 v6.0.2
 - cleanup
 

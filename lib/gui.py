@@ -19,8 +19,8 @@ import random
 import threading
 from xml.dom.minidom import parse
 import xbmcgui
-import lib.exifreadvfs
-from lib.iptcinfovfs import IPTCInfo
+from lib import exifread_xbmcvfs
+from lib.iptcinfo3_xbmcvfs import IPTCInfo
 from lib.utils import *
 
 ADDON = xbmcaddon.Addon()
@@ -170,7 +170,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     if self.slideshow_date:
                         exiffile = xbmcvfs.File(img[0])
                         try:
-                            exiftags = exifreadvfs.process_file(exiffile, details=False, stop_tag='DateTimeOriginal')
+                            exiftags = exifread_xbmcvfs.process_file(exiffile, details=False, stop_tag='DateTimeOriginal')
                             if 'EXIF DateTimeOriginal' in exiftags:
                                 datetime = bytes(exiftags['EXIF DateTimeOriginal'].values).decode('utf-8')
                                 # sometimes exif date returns useless data, probably no date set on camera
@@ -198,15 +198,15 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                         iptcfile = xbmcvfs.File(img[0])
                         try:
                             iptc = IPTCInfo(iptcfile)
-                            if 105 in iptc.data and iptc.data[105]:
-                                title = bytes(iptc.data[105]).decode('utf-8')
+                            if iptc['headline']:
+                                title = bytes(iptc['headline']).decode('utf-8')
                                 iptc_ti = True
-                            if 120 in iptc.data and iptc.data[120]:
-                                description = bytes(iptc.data[120]).decode('utf-8')
+                            if iptc['caption/abstract']:
+                                description = bytes(iptc['caption/abstract']).decode('utf-8')
                                 iptc_de = True
-                            if 25 in iptc.data and iptc.data[25]:
+                            if iptc['keywords']:
                                 tags = []
-                                for tag in iptc.data[25]:
+                                for tag in iptc['keywords']:
                                     tags.append(bytes(tag).decode('utf-8'))
                                 keywords = ', '.join(tags)
                                 iptc_ke = True
@@ -216,23 +216,22 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                         # get xmp title, description and subject
                         if (not iptc_ti or not iptc_de or not iptc_ke):
                             try:
-                                # why do i need to recreate the file object?
                                 xmpfile = xbmcvfs.File(img[0])
                                 data = xmpfile.readBytes().decode('cp437')
-                                titlematch = re.search(r'<dc:title.*?rdf:Alt.*?rdf:li.*?>(.*?)<', data, flags=re.DOTALL)
-                                if titlematch and not iptc_ti:
-                                    title = titlematch.group(1)
-                                    iptc_ti = True
-                                descmatch = re.search(r'<dc:description.*?rdf:Alt.*?rdf:li.*?>(.*?)<', data, flags=re.DOTALL)
-                                if descmatch and not iptc_de:
-                                    description = descmatch.group(1)
-                                    iptc_de = True
-                                subjmatch = re.search(r'<dc:subject.*?rdf:Bag.*?>(.*?)</rdf:Bag', data, flags=re.DOTALL)
-                                if subjmatch and not iptc_ke:
-                                    subjectpart = ''.join(subjmatch.group(1).split())
-                                    subjectgroup = subjectpart.replace('<rdf:li>','').split('</rdf:li>')
-                                    keywords = ' '.join(subjectgroup)
-                                    iptc_ke = True
+                                xmpdata = re.search(r'<x:xmpmeta.*?>(.*?)</x:xmpmeta', data, flags=re.DOTALL)
+                                if xmpdata:
+                                    titlematch = re.search(r'<dc:title.*?rdf:Alt.*?rdf:li.*?>(.*?)<', xmpdata.group(1), flags=re.DOTALL)
+                                    if titlematch and not iptc_ti:
+                                        title = titlematch.group(1)
+                                        iptc_ti = True
+                                    descmatch = re.search(r'<dc:description.*?rdf:Alt.*?rdf:li.*?>(.*?)<', xmpdata.group(1), flags=re.DOTALL)
+                                    if descmatch and not iptc_de:
+                                        description = descmatch.group(1)
+                                        iptc_de = True
+                                    subjmatch = re.search(r'<dc:subject.*?rdf:Bag.*?>(.*?)</rdf:Bag', xmpdata.group(1), flags=re.DOTALL)
+                                    if subjmatch and not iptc_ke:
+                                        keywords = ', '.join(subjmatch.group(1).split()).replace('<rdf:li>', '').replace('</rdf:li>', '')
+                                        iptc_ke = True
                             except:
                                 pass
                             xmpfile.close()
