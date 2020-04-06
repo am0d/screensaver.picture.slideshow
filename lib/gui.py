@@ -278,8 +278,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     # add fade anim, used for both fade and slide/zoom anim
                     self._set_prop('Fade%d' % order[0], '0')
                     self._set_prop('Fade%d' % order[1], '1')
+                elif self.slideshow_effect == 3:
+                    # we need to hide the images when no effect is selected, add fade effect with time=0
+                    self._set_prop('NoEffectFade%d' % order[0], '0')
+                    self._set_prop('NoEffectFade%d' % order[1], '1')
                 # add fade anim to background images
-                if self.slideshow_bg:
+                if self.slideshow_bg and self.slideshow_effect != 3:
                     self._set_prop('Fade1%d' % order[0], '0')
                     self._set_prop('Fade1%d' % order[1], '1')
                 # define next image

@@ -115,5 +115,8 @@
 			<icon>resources/icon.png</icon>
 			<fanart>resources/fanart.jpg</fanart>
 		</assets>
+		<news>- update exif, iptc and xmp data parsers
+- fix: display background setting was not selectable
+- fix: slideshow with no effect was broken</news>
 	</extension>
 </addon>

@@ -1,5 +1,7 @@
 v6.1.0
 - update exif, iptc and xmp data parsers
+- fix: display background setting was not selectable
+- fix: slideshow with no effect was broken
 
 v6.0.2
 - cleanup
