@@ -364,13 +364,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             log('failed to save resume point')
 
     def _read_cache(self, hexfile):
-        images = ''
         try:
             cache = xbmcvfs.File(CACHEFILE % hexfile)
             images = eval(cache.read())
             cache.close()
         except:
-            pass
+            images = []
         return images
 
     def _anim(self, cur_img):
