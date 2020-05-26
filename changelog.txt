@@ -1,3 +1,6 @@
+v6.2.1
+- use json to read and write cache
+
 v6.2.0
 - convert skin to 1080p
 - add support for more picture extensions

@@ -14,7 +14,6 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 
 import copy
-import json
 import random
 import threading
 from xml.dom.minidom import parse
@@ -366,7 +365,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
     def _read_cache(self, hexfile):
         try:
             cache = xbmcvfs.File(CACHEFILE % hexfile)
-            images = eval(cache.read())
+            images = json.load(cache)
             cache.close()
         except:
             images = []
