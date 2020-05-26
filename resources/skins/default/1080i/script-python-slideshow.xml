@@ -258,9 +258,9 @@
 						<info>Player.Progress</info>
 						<texturebg border="3" colordiffuse="FFFFFFFF">screensaver-progress.png</texturebg>
 						<midtexture colordiffuse="FF12B2E7">screensaver-progress.png</midtexture>
-						<lefttexture>-</lefttexture>
-						<righttexture>-</righttexture>
-						<overlaytexture>-</overlaytexture>
+						<lefttexture></lefttexture>
+						<righttexture></righttexture>
+						<overlaytexture></overlaytexture>
 					</control>
 					<control type="label">
 						<posx>555</posx>
