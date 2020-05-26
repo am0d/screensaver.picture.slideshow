@@ -48,7 +48,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         pass
 
     def onInit(self):
-        # load constants
+        # load vars
         self._get_vars()
         # get addon settings
         self._get_settings()
@@ -72,12 +72,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
 
     def _get_vars(self):
         # get the screensaver window id
-        self.winid    = xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
+        self.winid = xbmcgui.Window(xbmcgui.getCurrentWindowDialogId())
         # init the monitor class to catch onscreensaverdeactivated calls
-        self.Monitor  = MyMonitor(action = self._exit)
-        self.stop     = False
-        self.startup  = True
-        self.offset   = 0
+        self.Monitor = MyMonitor(action = self._exit)
+        self.stop = False
+        self.startup = True
+        self.offset = 0
 
     def _get_settings(self):
         # read addon settings
