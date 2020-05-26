@@ -31,14 +31,14 @@ EXIF_TYPES  = ('.jpg', '.jpeg', '.tif', '.tiff')
 
 # random effect list to choose from
 EFFECTLIST = ["('conditional', 'effect=zoom start=100 end=400 center=auto time=%i condition=true'),",
-              "('conditional', 'effect=slide start=1280,0 end=-1280,0 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=-1280,0 end=1280,0 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=0,720 end=0,-720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=0,-720 end=0,720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=1280,720 end=-1280,-720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=-1280,720 end=1280,-720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=1280,-720 end=-1280,720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
-              "('conditional', 'effect=slide start=-1280,-720 end=1280,720 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')"]
+              "('conditional', 'effect=slide start=1920,0 end=-1920,0 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=-1920,0 end=1920,0 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=0,1080 end=0,-1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=0,-1080 end=0,1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=1920,1080 end=-1920,-1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=-1920,1080 end=1920,-1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=1920,-1080 end=-1920,1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')",
+              "('conditional', 'effect=slide start=-1920,-1080 end=1920,1080 time=%i condition=true'), ('conditional', 'effect=zoom start=%i end=%i center=auto time=%i condition=true')"]
 
 # get local dateformat to localize the exif date tag
 DATEFORMAT = xbmc.getRegion('dateshort')
@@ -385,13 +385,13 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         # set zoom level depending on the anim time
         zoom = 110 + anim_time
         if number == 1 or number == 5 or number == 7:
-            posx = int(-1280 + (12.8 * anim_time) + 0.5)
+            posx = int(-1920 + (19.2 * anim_time) + 0.5)
         elif number == 2 or number == 6 or number == 8:
-            posx = int(1280 - (12.8 * anim_time) + 0.5)
+            posx = int(1920 - (19.2 * anim_time) + 0.5)
         if number == 3 or number == 5 or number == 6:
-            posy = int(-720 + (7.2 * anim_time) + 0.5)
+            posy = int(-1080 + (10.8 * anim_time) + 0.5)
         elif number == 4 or number == 7 or number == 8:
-            posy = int(720 - (7.2 * anim_time) + 0.5)
+            posy = int(1080 - (10.8 * anim_time) + 0.5)
         # position the current image
         cur_img.setPosition(posx, posy)
         # add the animation to the current image
