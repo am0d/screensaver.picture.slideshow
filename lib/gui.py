@@ -333,12 +333,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         if not self.slideshow_type == 2:
             self.items = []
             for method in methods:
-                json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "' + method[0] + '", "params": {"properties": ["fanart"]}, "id": 1}')
+                json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "' + method[0] + '", "params": {"properties": ["art"]}, "id": 1}')
                 json_response = json.loads(json_query)
                 if 'result' in json_response and json_response['result'] != None and method[1] in json_response['result']:
                     for item in json_response['result'][method[1]]:
-                        if item['fanart']:
-                            self.items.append([item['fanart'], item['label']])
+                        if 'fanart' in item['art']:
+                            self.items.append([item['art']['fanart'], item['label']])
         # randomize
         if self.slideshow_random:
             random.seed()

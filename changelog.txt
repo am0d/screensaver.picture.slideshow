@@ -1,4 +1,5 @@
-v6.2.1
+v6.3.0
+- use art table to retrieve fanart
 - use json to read and write cache
 
 v6.2.0
