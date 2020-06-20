@@ -44,6 +44,8 @@ DATEFORMAT = xbmc.getRegion('dateshort')
 
 class BinaryFile(xbmcvfs.File):
     def read(self, numBytes: int = 0) -> bytes:
+        if numBytes == 0:
+            return b""
         return bytes(self.readBytes(numBytes))
 
 
