@@ -416,7 +416,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             log(SKINDIR)
             log(json_query)
             return
-        skinxml = xbmc.translatePath(os.path.join(skinpath, 'addon.xml'))
+        skinxml = xbmcvfs.translatePath(os.path.join(skinpath, 'addon.xml'))
         try:
             # parse the skin addon.xml
             self.xml = parse(skinxml)
