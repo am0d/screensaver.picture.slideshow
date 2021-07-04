@@ -5,15 +5,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: ronie@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Kodi Translation Team\n"
 "Language-Team: Hindi (Devanagiri) (http://www.transifex.com/projects/p/xbmc-addons/language/hi/)\n"
+"Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Addon Summary"
@@ -54,7 +54,7 @@ msgstr "एफेक्ट"
 
 msgctxt "#30007"
 msgid "Slide"
-msgstr "	परिकलन"
+msgstr "\tपरिकलन"
 
 msgctxt "#30008"
 msgid "Crossfade"
@@ -93,13 +93,11 @@ msgid "Display images in random order"
 msgstr "चित्रो को यादृच्छिक तरीके से प्रदर्सन करे "
 
 # empty string with id 30017
-
 msgctxt "#30018"
 msgid "Use folder- and filename"
 msgstr ""
 
 # empty strings from id 30019 to 30020
-
 msgctxt "#30021"
 msgid "Display picture date"
 msgstr "चित्र के दिनांक का प्रदर्सन करे"
@@ -125,7 +123,6 @@ msgid "Resume slideshow from last position"
 msgstr ""
 
 # empty strings from id 30027 to 30028
-
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr ""
