@@ -92,7 +92,9 @@ msgctxt "#30016"
 msgid "Display images in random order"
 msgstr ""
 
-# empty string with id 30017
+msgctxt "#30017"
+msgid "Use full path"
+msgstr ""
 
 msgctxt "#30018"
 msgid "Use folder- and filename"
