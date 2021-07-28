@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: ronie@kodi.tv\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-22 14:29+0000\n"
+"PO-Revision-Date: 2021-07-28 18:29+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-add-ons-look-and-feel/screensaver-picture-slideshow/da_dk/>\n"
 "Language: da_dk\n"
@@ -35,11 +35,11 @@ msgstr "Mappe"
 
 msgctxt "#30002"
 msgid "Video Fanart"
-msgstr "Video-Fankunst"
+msgstr "Video-fankunst"
 
 msgctxt "#30003"
 msgid "Music Fanart"
-msgstr "Musik-Fankunst"
+msgstr "Musik-fankunst"
 
 msgctxt "#30004"
 msgid "Image Folder"
@@ -91,16 +91,16 @@ msgstr "Anvend mappenavn"
 
 msgctxt "#30016"
 msgid "Display images in random order"
-msgstr "Vis billederne i tilfældig orden"
+msgstr "Vis billederne i tilfældig rækkefølge"
 
 msgctxt "#30017"
 msgid "Use full path"
-msgstr ""
+msgstr "Brug fuld sti"
 
 # empty string with id 30017
 msgctxt "#30018"
 msgid "Use folder- and filename"
-msgstr ""
+msgstr "Brug mappe- og filnavn"
 
 # empty strings from id 30019 to 30020
 msgctxt "#30021"
@@ -113,7 +113,7 @@ msgstr "Vis yderligere billedetiketter"
 
 msgctxt "#30023"
 msgid "Display music info during audio playback"
-msgstr "Vis information om musikken mens den bliver spillet"
+msgstr "Vis information om musikken mens den bliver afspillet"
 
 msgctxt "#30024"
 msgid "Basic"
@@ -125,9 +125,9 @@ msgstr "Yderligere"
 
 msgctxt "#30026"
 msgid "Resume slideshow from last position"
-msgstr ""
+msgstr "Genoptag diasshow fra sidste position"
 
 # empty strings from id 30027 to 30028
 msgctxt "#30029"
 msgid "Display background picture"
-msgstr ""
+msgstr "Vis baggrundsbillede"
