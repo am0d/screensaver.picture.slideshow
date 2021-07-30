@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: ronie@kodi.tv\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-13 16:29+0000\n"
+"PO-Revision-Date: 2021-07-30 12:29+0000\n"
 "Last-Translator: Marek Adamski <fevbew@wp.pl>\n"
 "Language-Team: Polish <https://kodi.weblate.cloud/projects/kodi-add-ons-look-and-feel/screensaver-picture-slideshow/pl_pl/>\n"
 "Language: pl_pl\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.7.1\n"
+"X-Generator: Weblate 4.7.2\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that displays an image slideshow"
@@ -23,7 +23,7 @@ msgstr "Wygaszacz ekranu wyświetlający pokaz slajdów"
 
 msgctxt "Addon Description"
 msgid "The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images"
-msgstr "Ten wygaszacz ekranu to pokaz slajdów obrazów, przy użyciu różnych efektów przejść. Może być skonfigurowany tak, aby pokazywał fototapety filmów, muzyki lub obrazy z niestandardowego folderu."
+msgstr "Ten wygaszacz ekranu wyświetla pokaz slajdów z różnymi efektami przejścia. Można go skonfigurować tak, aby wyświetlał fototapety filmów, muzyki lub obrazy z niestandardowego folderu"
 
 msgctxt "#30000"
 msgid "Source of slideshow images"
@@ -95,7 +95,7 @@ msgstr "Wyświetlaj obrazy w losowej kolejności"
 
 msgctxt "#30017"
 msgid "Use full path"
-msgstr ""
+msgstr "Używaj pełnej ścieżki"
 
 # empty string with id 30017
 msgctxt "#30018"
