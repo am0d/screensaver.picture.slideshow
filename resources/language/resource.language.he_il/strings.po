@@ -5,10 +5,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: ronie@kodi.tv\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-07-22 14:29+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2021-08-03 14:29+0000\n"
+"Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-add-ons-look-and-feel/screensaver-picture-slideshow/he_il/>\n"
 "Language: he_il\n"
 "MIME-Version: 1.0\n"
@@ -95,12 +95,12 @@ msgstr "הצגת התמונות בסדר אקראי"
 
 msgctxt "#30017"
 msgid "Use full path"
-msgstr ""
+msgstr "להשתמש בנתיב המלא"
 
 # empty string with id 30017
 msgctxt "#30018"
 msgid "Use folder- and filename"
-msgstr ""
+msgstr "להשתמש בתיקייה- ובשם הקובץ"
 
 # empty strings from id 30019 to 30020
 msgctxt "#30021"
@@ -125,7 +125,7 @@ msgstr "נוסף"
 
 msgctxt "#30026"
 msgid "Resume slideshow from last position"
-msgstr ""
+msgstr "להמשיך את המצגת מאין שהופסקה"
 
 # empty strings from id 30027 to 30028
 msgctxt "#30029"
