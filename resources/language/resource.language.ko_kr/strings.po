@@ -5,16 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: ronie@kodi.tv\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Korean (http://www.transifex.com/projects/p/xbmc-addons/language/ko/)\n"
-"Language: ko\n"
+"PO-Revision-Date: 2021-08-23 08:29+0000\n"
+"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-look-and-feel/screensaver-picture-slideshow/ko_kr/>\n"
+"Language: ko_kr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.8\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that displays an image slideshow"
@@ -22,7 +23,7 @@ msgstr "이미지 슬라이드쇼를 보여주는 화면 보호기"
 
 msgctxt "Addon Description"
 msgid "The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images"
-msgstr "슬라이드쇼 화면 보호기는 다양한 화면 전환효과를 이용해 이미지 슬라이드쇼를 보여줍니다. 음악 라이브러리, 비디오 팬아트, 사용자 폴더의 사진을 볼 수 있게 설정할 수 있습니다."
+msgstr "슬라이드쇼 화면 보호기는 다양한 화면 전환효과를 이용해 이미지 슬라이드쇼를 보여줍니다. 음악 라이브러리, 비디오 팬아트, 사용자 폴더의 사진을 볼 수 있게 설정할 수 있습니다"
 
 msgctxt "#30000"
 msgid "Source of slideshow images"
@@ -94,7 +95,7 @@ msgstr "무작위 순으로 이미지 표시"
 
 msgctxt "#30017"
 msgid "Use full path"
-msgstr ""
+msgstr "전체 경로 사용"
 
 # empty string with id 30017
 msgctxt "#30018"
@@ -124,7 +125,7 @@ msgstr "부가"
 
 msgctxt "#30026"
 msgid "Resume slideshow from last position"
-msgstr ""
+msgstr "이전 위치에서 슬라이드쇼 다시 시작"
 
 # empty strings from id 30027 to 30028
 msgctxt "#30029"
