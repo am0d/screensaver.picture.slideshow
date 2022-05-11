@@ -7,22 +7,23 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Ukrainian (http://www.transifex.com/projects/p/xbmc-addons/language/uk/)\n"
-"Language: uk\n"
+"PO-Revision-Date: 2022-05-11 22:14+0000\n"
+"Last-Translator: A. <artem+weblate@molotov.work>\n"
+"Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-add-ons-look-and-feel/screensaver-picture-slideshow/uk_ua/>\n"
+"Language: uk_ua\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.12.1\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that displays an image slideshow"
-msgstr "Заставка що відображує слайдшоу із зображень."
+msgstr "Заставка, що відображує слайд-шоу зі зображень"
 
 msgctxt "Addon Description"
 msgid "The Slideshow screensaver will show you a slide show of images using various transition effects. It can be configured to show your libraries music or video fanart, or a custom folder of images"
-msgstr "Заставка Слайдшоу показує зображення по черзі, використовуючи різноманітні ефекти переходу. Заставка може бути налаштована на показ зображень з різних джерел: обкладинок відео фільмів, обкладинок музичних альбомів або будь-яких фото із вказаної користувачем папки."
+msgstr "Заставка \"Слайд-шоу\" показує зображення по черзі, використовуючи різноманітні ефекти переходу. Заставка може бути налаштована на показ зображень з різних джерел: обкладинок відео фільмів, обкладинок музичних альбомів або будь-яких фото із вказаної користувачем теки"
 
 msgctxt "#30000"
 msgid "Source of slideshow images"
@@ -94,7 +95,7 @@ msgstr "Показувати малюнки у випадковому поряд
 
 msgctxt "#30017"
 msgid "Use full path"
-msgstr ""
+msgstr "Застосувати повний шлях"
 
 # empty string with id 30017
 msgctxt "#30018"
@@ -124,9 +125,9 @@ msgstr "Додатково"
 
 msgctxt "#30026"
 msgid "Resume slideshow from last position"
-msgstr ""
+msgstr "Відновити слайд-шоу з останньої позиції"
 
 # empty strings from id 30027 to 30028
 msgctxt "#30029"
 msgid "Display background picture"
-msgstr ""
+msgstr "Показувати зображення тла"
