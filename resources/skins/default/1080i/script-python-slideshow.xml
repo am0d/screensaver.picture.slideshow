@@ -157,6 +157,15 @@
 					</animation>
 				</control>
 			</control>
+			<control type="image" id="98"> <!--overlay-->
+				<posx>0</posx>
+				<posy>250</posy>
+				<width>auto</width>
+				<height>auto</height>
+				<texture>overlayfade.png</texture>
+				<animation effect="fade" end="95" condition="True">Conditional</animation>
+				<visible>String.IsEqual(Window.Property(SlideView.Overlay),show)</visible>
+			</control>
 			<control type="label" id="99"> <!--name-->
 				<posx>1875</posx>
 				<posy>992</posy>
@@ -193,7 +202,7 @@
 				<posy>862</posy>
 				<animation effect="fade" start="80" end="80" time="0" condition="true">Conditional</animation>
 				<visible>Player.HasAudio + String.IsEqual(Window.Property(SlideView.Music),show)</visible>
-				<control type="image">
+				<control type="image" id="5">
 					<posx>0</posx>
 					<posy>-7</posy>
 					<width>210</width>

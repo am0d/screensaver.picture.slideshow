@@ -130,3 +130,7 @@ msgstr ""
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Display background picture"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr "Use vignette overlay"
