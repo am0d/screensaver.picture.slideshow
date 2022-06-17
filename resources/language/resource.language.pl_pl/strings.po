@@ -131,3 +131,7 @@ msgstr "Wznów pokaz slajdów z ostatniej pozycji"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Pokazuj obraz tła"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

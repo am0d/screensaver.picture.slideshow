@@ -131,3 +131,7 @@ msgstr "Reprendre le diaporama à partir de la dernière position"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Afficher l'image d'arrière-plan"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

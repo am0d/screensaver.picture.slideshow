@@ -131,3 +131,7 @@ msgstr "从最后位置恢复幻灯片"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "显示背景图片"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

@@ -131,3 +131,7 @@ msgstr "이전 위치에서 슬라이드쇼 다시 시작"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "배경 사진 표시"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

@@ -131,3 +131,7 @@ msgstr "Riprendi lo slideshow dall'ultima posizione"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Mostra immagine di sfondo"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

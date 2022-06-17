@@ -131,3 +131,7 @@ msgstr "Hervat diavoorstelling vanaf laatste positie"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Toon achtergrondafbeelding"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

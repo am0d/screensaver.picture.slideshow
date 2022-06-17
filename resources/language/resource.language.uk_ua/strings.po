@@ -131,3 +131,7 @@ msgstr "Відновити слайд-шоу з останньої позиці�
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "Показувати зображення тла"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""

@@ -131,3 +131,7 @@ msgstr "להמשיך את המצגת מאין שהופסקה"
 msgctxt "#30029"
 msgid "Display background picture"
 msgstr "הצג תמונת רקע"
+
+msgctxt "#30030"
+msgid "Use vignette overlay"
+msgstr ""
