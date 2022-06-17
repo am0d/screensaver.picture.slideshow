@@ -94,6 +94,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.slideshow_time = ADDON.getSettingInt('time') + 2
         # convert float to hex value usable by the skin
         self.slideshow_dim = hex(int('%.0f' % (float(100 - ADDON.getSettingInt('level')) * 2.55)))[2:] + 'ffffff'
+        self.slideshow_overlay = ADDON.getSettingBool('overlay')
         self.slideshow_random = ADDON.getSettingBool('random')
         self.slideshow_resume = ADDON.getSettingBool('resume')
         self.slideshow_scale = ADDON.getSettingBool('scale')
@@ -126,6 +127,9 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.textbox = self.getControl(101)
         # set the dim property
         self._set_prop('Dim', self.slideshow_dim)
+        # show vignette overlay during slideshow if enabled
+        if self.slideshow_overlay:
+            self._set_prop('Overlay', 'show')
         # show music info during slideshow if enabled
         if self.slideshow_music:
             self._set_prop('Music', 'show')
@@ -451,6 +455,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self._clear_prop('Fade11')
         self._clear_prop('Fade12')
         self._clear_prop('Dim')
+        self._clear_prop('Overlay')
         self._clear_prop('Music')
         self._clear_prop('Splash')
         self._clear_prop('Background')
