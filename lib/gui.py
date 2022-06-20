@@ -42,6 +42,7 @@ EFFECTLIST = ["('conditional', 'effect=zoom start=100 end=400 center=auto time=%
 # get local dateformat to localize the exif date tag
 DATEFORMAT = xbmc.getRegion('dateshort')
 
+
 class BinaryFile(xbmcvfs.File):
     def read(self, numBytes: int = 0) -> bytes:
         if not numBytes:
@@ -154,13 +155,16 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 if self.slideshow_type == 2 and not xbmcvfs.exists(img[0]):
                     continue
                 # add image to gui
-                cur_img.setImage(img[0],False)
+                useCache = False
+                if img[0].startswith('http'): # do not redownload images from online sources each time
+                    useCache = True
+                cur_img.setImage(img[0],useCache)
                 # add background image to gui
                 if (not self.slideshow_scale) and self.slideshow_bg:
                     if order[0] == 1:
-                        self.image3.setImage(img[0],False)
+                        self.image3.setImage(img[0],useCache)
                     else:
-                        self.image4.setImage(img[0],False)
+                        self.image4.setImage(img[0],useCache)
                 # give xbmc some time to load the image
                 if not self.startup:
                     xbmc.sleep(1000)
@@ -259,22 +263,22 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     self.textbox.setVisible(False)
                 # get the file or foldername if enabled in settings
                 if self.slideshow_name != 0:
-                    if self.slideshow_name == 1:
+                    if self.slideshow_name == 1: # filename
                         if self.slideshow_type == 2:
-                            NAME, EXT = os.path.splitext(os.path.basename(img[0]))
+                            NAME, EXT = os.path.splitext(os.path.basename(img[1]))
                         else:
                             NAME = img[1]
-                    elif self.slideshow_name == 2:
+                    elif self.slideshow_name == 2: # directory name
                         ROOT, NAME = os.path.split(os.path.dirname(img[0]))
-                    elif self.slideshow_name == 3:
+                    elif self.slideshow_name == 3: # directory name / filename
                         if self.slideshow_type == 2:
                             ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
-                            FILE, EXT = os.path.splitext(os.path.basename(img[0]))
+                            FILE, EXT = os.path.splitext(os.path.basename(img[1]))
                             NAME = FOLDER + ' / ' + FILE
                         else:
                             ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
                             NAME = FOLDER + ' / ' + img[1]
-                    elif self.slideshow_name == 4:
+                    elif self.slideshow_name == 4: # full path
                             NAME = os.path.realpath(img[0])
                     self.namelabel.setLabel(NAME)
                 # set animations
@@ -486,6 +490,7 @@ class img_update(threading.Thread):
     def _exit(self):
         # exit when onScreensaverDeactivated gets called
         self.stop = True
+
 
 class MyMonitor(xbmc.Monitor):
     def __init__( self, *args, **kwargs ):
