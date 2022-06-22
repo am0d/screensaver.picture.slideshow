@@ -43,7 +43,7 @@
 					<constraints>
 						<minimum>2</minimum>
 						<step>1</step>
-						<maximum>60</maximum>
+						<maximum>100</maximum>
 					</constraints>
 				</setting>
 				<setting help="" id="level" label="30005" type="integer">
