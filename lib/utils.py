@@ -89,6 +89,11 @@ def walk(path):
                 dirs, files = xbmcvfs.listdir(folder)
             log('dirs: %s' % len(dirs))
             log('files: %s' % len(files))
+            if not folder.startswith('plugin://'):
+                # natural sort
+                convert = lambda text: int(text) if text.isdigit() else text
+                alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+                files.sort(key=alphanum_key)
             for item in files:
                 # check pictureexcludes from as.xml
                 fileskip = False
