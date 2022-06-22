@@ -73,16 +73,20 @@ def walk(path):
         folders.append(path)
     for folder in folders:
         if xbmcvfs.exists(xbmcvfs.translatePath(folder)):
-            # get all files and subfolders
-            getroot = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Files.GetDirectory", "params":{"directory":"%s", "sort":{"method":"label"}}, "id":1 }' % folder)
-            root = json.loads(getroot)
             dirs = []
             files = []
-            for item in root["result"]["files"]:
-                if item["filetype"] == "file":
-                    files.append(item)
-                elif item["filetype"] == "directory":
-                    dirs.append(item["file"])
+            # get all files and subfolders
+            if folder.startswith('plugin://'):
+                getroot = xbmc.executeJSONRPC('{"jsonrpc":"2.0", "method":"Files.GetDirectory", "params":{"directory":"%s", "sort":{"method":"label"}}, "id":1 }' % folder)
+                root = json.loads(getroot)
+                if 'result' in root and 'files' in root["result"]:
+                    for item in root["result"]["files"]:
+                        if item["filetype"] == "file":
+                            files.append(item)
+                        elif item["filetype"] == "directory":
+                            dirs.append(item["file"])
+            else:
+                dirs, files = xbmcvfs.listdir(folder)
             log('dirs: %s' % len(dirs))
             log('files: %s' % len(files))
             for item in files:
@@ -91,16 +95,20 @@ def walk(path):
                 if excludes:
                     for string in excludes:
                         regex = re.compile(string)
-                        match = regex.search(item["label"])
+                        if folder.startswith('plugin://'):
+                            match = regex.search(item["label"])
+                        else:
+                            match = regex.search(item)
                         if match:
                             fileskip = True
                             break
                 # filter out all images
-                if os.path.splitext(item["label"])[1].lower() in IMAGE_TYPES and not fileskip:
-                    if folder.startswith('plugin://'):
+                if folder.startswith('plugin://'):
+                    if os.path.splitext(item["label"])[1].lower() in IMAGE_TYPES and not fileskip:
                         images.append([item["file"], item["label"]])
-                    else:
-                        images.append([os.path.join(folder,item["file"]), item["label"]])
+                else:
+                    if os.path.splitext(item)[1].lower() in IMAGE_TYPES and not fileskip:
+                        images.append([os.path.join(folder,item), item])
             for item in dirs:
                 # check pictureexcludes from as.xml
                 dirskip = False

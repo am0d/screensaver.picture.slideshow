@@ -265,20 +265,32 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 if self.slideshow_name != 0:
                     if self.slideshow_name == 1: # filename
                         if self.slideshow_type == 2:
-                            NAME, EXT = os.path.splitext(os.path.basename(img[1]))
+                            if self.slideshow_path.startswith('plugin://'):
+                                NAME, EXT = os.path.splitext(os.path.basename(img[1]))
+                            else:
+                                NAME, EXT = os.path.splitext(os.path.basename(img[0]))
                         else:
                             NAME = img[1]
                     elif self.slideshow_name == 2: # directory name
-                        ROOT, NAME = os.path.split(os.path.dirname(img[0]))
+                        if self.slideshow_path.startswith('plugin://'):
+                            NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
+                        else:
+                            ROOT, NAME = os.path.split(os.path.dirname(img[0]))
                     elif self.slideshow_name == 3: # directory name / filename
                         if self.slideshow_type == 2:
-                            ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
-                            FILE, EXT = os.path.splitext(os.path.basename(img[1]))
-                            NAME = FOLDER + ' / ' + FILE
+                            if self.slideshow_path.startswith('plugin://'):
+                                NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
+                            else:
+                                ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
+                                FILE, EXT = os.path.splitext(os.path.basename(img[0]))
+                                NAME = FOLDER + ' / ' + FILE
                         else:
                             ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
                             NAME = FOLDER + ' / ' + img[1]
                     elif self.slideshow_name == 4: # full path
+                        if self.slideshow_path.startswith('plugin://'):
+                            NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
+                        else:
                             NAME = os.path.realpath(img[0])
                     self.namelabel.setLabel(NAME)
                 # set animations
