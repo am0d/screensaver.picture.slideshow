@@ -80,6 +80,11 @@
 		</category>
 		<category id="30025" label="30025">
 			<group id="1">
+				<setting help="" id="recursive" label="361" type="boolean">
+					<level>0</level>
+					<default>true</default>
+					<control type="toggle"/>
+				</setting>
 				<setting help="" id="random" label="30016" type="boolean">
 					<level>0</level>
 					<default>true</default>

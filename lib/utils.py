@@ -114,22 +114,23 @@ def walk(path):
                 else:
                     if os.path.splitext(item)[1].lower() in IMAGE_TYPES and not fileskip:
                         images.append([os.path.join(folder,item), item])
-            for item in dirs:
-                # check pictureexcludes from as.xml
-                dirskip = False
-                if excludes:
-                    for string in excludes:
-                        regex = re.compile(string)
-                        match = regex.search(item)
-                        if match:
-                            dirskip = True
-                            break
-                # recursively scan all subfolders
-                if not dirskip:
-                    if item.startswith('plugin://'):
-                        images += walk(item)
-                    else:
-                        images += walk(os.path.join(folder,item,'')) # make sure paths end with a slash
+            if xbmcaddon.Addon().getSettingBool('recursive'):
+                for item in dirs:
+                    # check pictureexcludes from as.xml
+                    dirskip = False
+                    if excludes:
+                        for string in excludes:
+                            regex = re.compile(string)
+                            match = regex.search(item)
+                            if match:
+                                dirskip = True
+                                break
+                    # recursively scan all subfolders
+                    if not dirskip:
+                        if item.startswith('plugin://'):
+                            images += walk(item)
+                        else:
+                            images += walk(os.path.join(folder,item,'')) # make sure paths end with a slash
         else:
             log('folder does not exist')
     return images

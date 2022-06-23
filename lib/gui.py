@@ -96,6 +96,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         # convert float to hex value usable by the skin
         self.slideshow_dim = hex(int('%.0f' % (float(100 - ADDON.getSettingInt('level')) * 2.55)))[2:] + 'ffffff'
         self.slideshow_overlay = ADDON.getSettingBool('overlay')
+        self.slideshow_recursive = ADDON.getSettingBool('recursive')
         self.slideshow_random = ADDON.getSettingBool('random')
         self.slideshow_resume = ADDON.getSettingBool('resume')
         self.slideshow_scale = ADDON.getSettingBool('scale')
@@ -339,7 +340,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         log('slideshow type: %i' % self.slideshow_type)
 	    # check if we have an image folder, else fallback to video fanart
         if self.slideshow_type == 2:
-            hexfile = checksum(self.slideshow_path.encode('utf-8')) # check if path has changed, so we can create a new cache at startup
+            hexfile = checksum(self.slideshow_path.encode('utf-8')) + '_' + str(self.slideshow_recursive) # check if path has changed, so we can create a new cache at startup
             log('image path: %s' % self.slideshow_path)
             log('update: %s' % update)
             if (not xbmcvfs.exists(CACHEFILE % hexfile)) or update: # create a new cache if no cache exits or during the background scan
