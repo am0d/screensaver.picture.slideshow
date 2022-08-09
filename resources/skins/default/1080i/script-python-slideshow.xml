@@ -187,14 +187,17 @@
 				<shadowcolor>F0000000</shadowcolor>
 			</control>
 			<control type="textbox" id="101"> <!-- exif -->
+				<!-- <right>1875</posx>
+				<bottom>984</posy> -->
 				<posx>45</posx>
-				<posy>925</posy>
-				<width>900</width>
-				<height>135</height>
+				<!-- <posy>925</posy> -->
+				<posy>992</posy>
+				<width>auto</width>
+				<height>68</height>
 				<font>font13</font>
 				<align>left</align>
 				<textcolor>C0FFFFFF</textcolor>
-				<shadowcolor>C0000000</shadowcolor>
+				<shadowcolor>00000000</shadowcolor>
 				<visible>![Player.HasAudio + String.IsEqual(Window.Property(SlideView.Music),show)]</visible>
 			</control>
 			<control type="group">

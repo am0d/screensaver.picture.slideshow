@@ -21,6 +21,7 @@ import exifread
 from iptcinfo3 import IPTCInfo
 import xbmcgui
 from lib.utils import *
+from fractions import Fraction
 
 ADDON = xbmcaddon.Addon()
 SKINDIR = xbmc.getSkinDir()
@@ -42,6 +43,17 @@ EFFECTLIST = ["('conditional', 'effect=zoom start=100 end=400 center=auto time=%
 # get local dateformat to localize the exif date tag
 DATEFORMAT = xbmc.getRegion('dateshort')
 
+def read_exif_tag(exiftags, tagname):
+    return exiftags[tagname] if tagname in exiftags else None
+
+def strip_common_prefix(phrase: str, prefix_phrase: str):
+    prefix = []
+    for i, o in zip(phrase.split(' '), prefix_phrase.split(' ')):
+        if i == o:
+            prefix.append(i)
+        else:
+            break
+    return phrase[len(' '.join(prefix)):].strip()
 
 class BinaryFile(xbmcvfs.File):
     def read(self, numBytes: int = 0) -> bytes:
@@ -95,8 +107,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.slideshow_time = ADDON.getSettingInt('time') + 2
         # convert float to hex value usable by the skin
         self.slideshow_dim = hex(int('%.0f' % (float(100 - ADDON.getSettingInt('level')) * 2.55)))[2:] + 'ffffff'
-        self.slideshow_overlay = ADDON.getSettingBool('overlay')
-        self.slideshow_recursive = ADDON.getSettingBool('recursive')
         self.slideshow_random = ADDON.getSettingBool('random')
         self.slideshow_resume = ADDON.getSettingBool('resume')
         self.slideshow_scale = ADDON.getSettingBool('scale')
@@ -129,9 +139,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.textbox = self.getControl(101)
         # set the dim property
         self._set_prop('Dim', self.slideshow_dim)
-        # show vignette overlay during slideshow if enabled
-        if self.slideshow_overlay:
-            self._set_prop('Overlay', 'show')
         # show music info during slideshow if enabled
         if self.slideshow_music:
             self._set_prop('Music', 'show')
@@ -156,16 +163,13 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 if self.slideshow_type == 2 and not xbmcvfs.exists(img[0]):
                     continue
                 # add image to gui
-                useCache = False
-                if img[0].startswith('http'): # do not redownload images from online sources each time
-                    useCache = True
-                cur_img.setImage(img[0],useCache)
+                cur_img.setImage(img[0],False)
                 # add background image to gui
                 if (not self.slideshow_scale) and self.slideshow_bg:
                     if order[0] == 1:
-                        self.image3.setImage(img[0],useCache)
+                        self.image3.setImage(img[0],False)
                     else:
-                        self.image4.setImage(img[0],useCache)
+                        self.image4.setImage(img[0],False)
                 # give xbmc some time to load the image
                 if not self.startup:
                     xbmc.sleep(1000)
@@ -180,34 +184,76 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 iptc_ti = False
                 iptc_de = False
                 iptc_ke = False
+                camera_description = None
+                details = None
                 if self.slideshow_type == 2 and (self.slideshow_date or self.slideshow_iptc) and (os.path.splitext(img[0])[1].lower() in EXIF_TYPES):
                     # get exif date
-                    if self.slideshow_date:
-                        exiffile = BinaryFile(img[0])
-                        try:
-                            exiftags = exifread.process_file(exiffile, details=False, stop_tag='DateTimeOriginal')
-                            if 'EXIF DateTimeOriginal' in exiftags:
-                                datetime = exiftags['EXIF DateTimeOriginal'].values
-                                # sometimes exif date returns useless data, probably no date set on camera
-                                if datetime == '0000:00:00 00:00:00':
-                                    datetime = ''
-                                else:
-                                    try:
-                                        # localize the date format
-                                        date = datetime[:10].split(':')
-                                        time = datetime[10:]
-                                        if DATEFORMAT[1] == 'm':
-                                            datetime = date[1] + '-' + date[2] + '-' + date[0] + '  ' + time
-                                        elif DATEFORMAT[1] == 'd':
-                                            datetime = date[2] + '-' + date[1] + '-' + date[0] + '  ' + time
-                                        else:
-                                            datetime = date[0] + '-' + date[1] + '-' + date[2] + '  ' + time
-                                    except:
-                                        pass
-                                    exif = True
-                        except:
-                            pass
-                        exiffile.close()
+                    exiffile = BinaryFile(img[0])
+                    try:
+                        exiftags = exifread.process_file(exiffile, details=False)
+                        if 'EXIF DateTimeOriginal' in exiftags:
+                            datetime = exiftags['EXIF DateTimeOriginal'].values
+                            # sometimes exif date returns useless data, probably no date set on camera
+                            if datetime == '0000:00:00 00:00:00':
+                                datetime = ''
+                            else:
+                                try:
+                                    # localize the date format
+                                    date = datetime[:10].split(':')
+                                    time = datetime[10:]
+                                    if DATEFORMAT[1] == 'm':
+                                        datetime = date[1] + '-' + date[2] + '-' + date[0] + '  ' + time
+                                    elif DATEFORMAT[1] == 'd':
+                                        datetime = date[2] + '-' + date[1] + '-' + date[0] + '  ' + time
+                                    else:
+                                        datetime = date[0] + '-' + date[1] + '-' + date[2] + '  ' + time
+                                except:
+                                    pass
+                                exif = True
+                        camera_make = read_exif_tag(exiftags, 'Image Make')
+                        camera_model = read_exif_tag(exiftags, 'Image Model')
+                        if camera_make and camera_model :
+                            camera = f"{str(camera_make).strip()} {strip_common_prefix(str(camera_model), str(camera_make) + ' ')}"
+                        elif camera_make:
+                            camera = str(camera_make)
+                        elif camera_model:
+                            camera = str(camera_model)
+                        else:
+                            camera = None
+                        lens = read_exif_tag(exiftags, 'EXIF LensModel')
+                        if camera and lens:
+                            camera_description = f"Camera / Lens: {camera} / {str(lens)}"
+                        elif camera:
+                            camera_description = f"Camera: {camera}"
+                        elif lens:
+                            camera_description = f"Lens: {str(lens)}"
+                        details = []
+                        focal_length = read_exif_tag(exiftags, 'EXIF FocalLength')
+                        if focal_length:
+                            details.append(f"{str(focal_length.values[0].decimal())} mm")
+                        exposure_time = read_exif_tag(exiftags, 'EXIF ExposureTime')
+                        if exposure_time:
+                            try:
+                                exposure_time = exposure_time.values[0]
+                                if exposure_time.numerator > 1:
+                                    exposure_time = Fraction(1, round(exposure_time.denominator / exposure_time.numerator))
+                            except Exception as e:
+                                print(f'Error modifying shutter speed {str(exposure_time)}')
+                                print(e)
+                            details.append(f"{str(exposure_time)} sec.")
+                        f_stop = read_exif_tag(exiftags, 'EXIF FNumber')
+                        if f_stop:
+                            details.append(f"f/{str(f_stop.values[0].decimal())}")
+                        iso_speed = read_exif_tag(exiftags, 'EXIF ISOSpeedRatings')
+                        if iso_speed:
+                            details.append(f"ISO {str(iso_speed)}")
+                        details = 'Settings: ' + ' '.join(details) if len(details) > 0 else None
+                        if camera_description or details > 0:
+                            exif = True
+                    except Exception as ex:
+                        log(f"Error parsing EXIF Data: {str(ex)}")
+                        pass
+                    exiffile.close()
                     # get iptc title, description and keywords
                     if self.slideshow_iptc:
                         iptcfile = BinaryFile(img[0])
@@ -257,41 +303,42 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 else:
                     self.datelabel.setVisible(False)
                 # display iptc data if we have any
-                if iptc_ti or iptc_de or iptc_ke:
-                    self.textbox.setText('[CR]'.join([title, keywords] if title == description else [title, description, keywords]))
+                lines = []
+                if iptc_ti:
+                    lines.append(title)
+                if iptc_de and iptc_de != iptc_ti:
+                    lines.append(description)
+                if iptc_ke:
+                    lines.append(keywords)
+                if camera_description:
+                    lines.append(camera_description)
+                if details:
+                    lines.append(details)
+                if len(lines) > 0:
+                    self.textbox.setText('[CR]'.join(lines))
+                    self.textbox.setHeight(len(lines)*42)
+                    self.textbox.setPosition(45, 1060-len(lines) * 42)
                     self.textbox.setVisible(True)
                 else:
                     self.textbox.setVisible(False)
                 # get the file or foldername if enabled in settings
                 if self.slideshow_name != 0:
-                    if self.slideshow_name == 1: # filename
+                    if self.slideshow_name == 1:
                         if self.slideshow_type == 2:
-                            if self.slideshow_path.startswith('plugin://'):
-                                NAME, EXT = os.path.splitext(os.path.basename(img[1]))
-                            else:
-                                NAME, EXT = os.path.splitext(os.path.basename(img[0]))
+                            NAME, EXT = os.path.splitext(os.path.basename(img[0]))
                         else:
                             NAME = img[1]
-                    elif self.slideshow_name == 2: # directory name
-                        if self.slideshow_path.startswith('plugin://'):
-                            NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
-                        else:
-                            ROOT, NAME = os.path.split(os.path.dirname(img[0]))
-                    elif self.slideshow_name == 3: # directory name / filename
+                    elif self.slideshow_name == 2:
+                        ROOT, NAME = os.path.split(os.path.dirname(img[0]))
+                    elif self.slideshow_name == 3:
                         if self.slideshow_type == 2:
-                            if self.slideshow_path.startswith('plugin://'):
-                                NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
-                            else:
-                                ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
-                                FILE, EXT = os.path.splitext(os.path.basename(img[0]))
-                                NAME = FOLDER + ' / ' + FILE
+                            ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
+                            FILE, EXT = os.path.splitext(os.path.basename(img[0]))
+                            NAME = FOLDER + ' / ' + FILE
                         else:
                             ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
                             NAME = FOLDER + ' / ' + img[1]
-                    elif self.slideshow_name == 4: # full path
-                        if self.slideshow_path.startswith('plugin://'):
-                            NAME, EXT = os.path.splitext(os.path.basename(img[1])) # only filename is available
-                        else:
+                    elif self.slideshow_name == 4:
                             NAME = os.path.realpath(img[0])
                     self.namelabel.setLabel(NAME)
                 # set animations
@@ -340,7 +387,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         log('slideshow type: %i' % self.slideshow_type)
 	    # check if we have an image folder, else fallback to video fanart
         if self.slideshow_type == 2:
-            hexfile = checksum(self.slideshow_path.encode('utf-8')) + '_' + str(self.slideshow_recursive) # check if path has changed, so we can create a new cache at startup
+            hexfile = checksum(self.slideshow_path.encode('utf-8')) # check if path has changed, so we can create a new cache at startup
             log('image path: %s' % self.slideshow_path)
             log('update: %s' % update)
             if (not xbmcvfs.exists(CACHEFILE % hexfile)) or update: # create a new cache if no cache exits or during the background scan
@@ -348,11 +395,11 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 create_cache(self.slideshow_path, hexfile)
             self.items = self._read_cache(hexfile)
             log('items: %s' % len(self.items))
-            if not self.items:
-                self.slideshow_type = 0
-                # delete empty cache file
-                if xbmcvfs.exists(CACHEFILE % hexfile):
-                    xbmcvfs.delete(CACHEFILE % hexfile)
+            # if not self.items:
+            #     self.slideshow_type = 0
+            #     # delete empty cache file
+            #     if xbmcvfs.exists(CACHEFILE % hexfile):
+            #         xbmcvfs.delete(CACHEFILE % hexfile)
 	    # video fanart
         if self.slideshow_type == 0:
             methods = [('VideoLibrary.GetMovies', 'movies'), ('VideoLibrary.GetTVShows', 'tvshows')]
@@ -472,7 +519,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self._clear_prop('Fade11')
         self._clear_prop('Fade12')
         self._clear_prop('Dim')
-        self._clear_prop('Overlay')
         self._clear_prop('Music')
         self._clear_prop('Splash')
         self._clear_prop('Background')
@@ -503,7 +549,6 @@ class img_update(threading.Thread):
     def _exit(self):
         # exit when onScreensaverDeactivated gets called
         self.stop = True
-
 
 class MyMonitor(xbmc.Monitor):
     def __init__( self, *args, **kwargs ):
