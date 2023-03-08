@@ -22,6 +22,7 @@ from iptcinfo3 import IPTCInfo
 import xbmcgui
 from lib.utils import *
 from fractions import Fraction
+import json
 
 ADDON = xbmcaddon.Addon()
 SKINDIR = xbmc.getSkinDir()
@@ -81,7 +82,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.adj_time = int(101000 * speedup)
         # get the images
         self._get_items()
-        if self.slideshow_type == 2 and not self.slideshow_random and self.slideshow_resume:
+        if self.slideshow_type == SlideshowType.Image_Folder and self.slideshow_resume:
             self._get_offset()
         if self.items:
             # hide startup splash
@@ -97,10 +98,11 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self.stop = False
         self.startup = True
         self.offset = 0
+        self.seed = 0
 
     def _get_settings(self):
         # read addon settings
-        self.slideshow_type = ADDON.getSettingInt('type')
+        self.slideshow_type = SlideshowType(ADDON.getSettingInt('type'))
         self.slideshow_path = ADDON.getSettingString('path')
         self.slideshow_effect = ADDON.getSettingInt('effect')
         # labelenum is broken, we use enum and get the index (index 0 = 2 secs)
@@ -137,6 +139,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             self.namelabel = self.getControl(99)
         self.datelabel = self.getControl(100)
         self.textbox = self.getControl(101)
+        self.textbox_bg = self.getControl(102)
+        self.textbox_bg.setVisible(False)
         # set the dim property
         self._set_prop('Dim', self.slideshow_dim)
         # show music info during slideshow if enabled
@@ -150,6 +154,10 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         # we need to start the update thread after the deep copy of self.items finishes
         thread = img_update(data=self._get_items)
         thread.start()
+
+        # Shuffle the items if required
+        self._randomize(items)
+
         # start with image 1
         cur_img = self.image1
         order = [1,2]
@@ -160,7 +168,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             # iterate through all the images
             for img in items[self.offset:]:
                 # cache file may be outdated
-                if self.slideshow_type == 2 and not xbmcvfs.exists(img[0]):
+                if self.slideshow_type == SlideshowType.Image_Folder and not xbmcvfs.exists(img[0]):
                     continue
                 # add image to gui
                 cur_img.setImage(img[0],False)
@@ -186,7 +194,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 iptc_ke = False
                 camera_description = None
                 details = None
-                if self.slideshow_type == 2 and (self.slideshow_date or self.slideshow_iptc) and (os.path.splitext(img[0])[1].lower() in EXIF_TYPES):
+                if self.slideshow_type == SlideshowType.Image_Folder and (self.slideshow_date or self.slideshow_iptc) and (os.path.splitext(img[0])[1].lower() in EXIF_TYPES):
                     # get exif date
                     exiffile = BinaryFile(img[0])
                     try:
@@ -304,12 +312,12 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     self.datelabel.setVisible(False)
                 # display iptc data if we have any
                 lines = []
-                if iptc_ti:
-                    lines.append(title)
-                if iptc_de and iptc_de != iptc_ti:
-                    lines.append(description)
-                if iptc_ke:
-                    lines.append(keywords)
+                # if iptc_ti:
+                #     lines.append(title)
+                # if iptc_de and iptc_de != iptc_ti:
+                #     lines.append(description)
+                # if iptc_ke:
+                #     lines.append(keywords)
                 if camera_description:
                     lines.append(camera_description)
                 if details:
@@ -317,21 +325,22 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 if len(lines) > 0:
                     self.textbox.setText('[CR]'.join(lines))
                     self.textbox.setHeight(len(lines)*42)
-                    self.textbox.setPosition(45, 1060-len(lines) * 42)
+                    self.textbox_bg.setHeight(len(lines)*42)
+                    self.textbox.setPosition(45, 1072-len(lines) * 42)
                     self.textbox.setVisible(True)
                 else:
                     self.textbox.setVisible(False)
                 # get the file or foldername if enabled in settings
                 if self.slideshow_name != 0:
                     if self.slideshow_name == 1:
-                        if self.slideshow_type == 2:
+                        if self.slideshow_type == SlideshowType.Image_Folder:
                             NAME, EXT = os.path.splitext(os.path.basename(img[0]))
                         else:
                             NAME = img[1]
                     elif self.slideshow_name == 2:
                         ROOT, NAME = os.path.split(os.path.dirname(img[0]))
                     elif self.slideshow_name == 3:
-                        if self.slideshow_type == 2:
+                        if self.slideshow_type == SlideshowType.Image_Folder:
                             ROOT, FOLDER = os.path.split(os.path.dirname(img[0]))
                             FILE, EXT = os.path.splitext(os.path.basename(img[0]))
                             NAME = FOLDER + ' / ' + FILE
@@ -341,6 +350,11 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     elif self.slideshow_name == 4:
                             NAME = os.path.realpath(img[0])
                     self.namelabel.setLabel(NAME)
+                
+                # dim the background behind the text ...
+                self.textbox_bg.setVisible(self.namelabel.isVisible() or self.datelabel.isVisible() or self.textbox.isVisible())
+                self.textbox_bg.setPosition(0, 1072-max(len(lines),2) * 42)
+
                 # set animations
                 if self.slideshow_effect == 0:
                     # add slide anim
@@ -380,13 +394,15 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     break
                 self.position += 1
             self.offset = 0
+            self.seed = random.random()
             items = copy.deepcopy(self.items)
+            self._randomize(items)
 
     def _get_items(self, update=False):
-        self.slideshow_type  = ADDON.getSettingInt('type')
-        log('slideshow type: %i' % self.slideshow_type)
+        self.slideshow_type  = SlideshowType(ADDON.getSettingInt('type'))
+        log(f'slideshow type: {self.slideshow_type}')
 	    # check if we have an image folder, else fallback to video fanart
-        if self.slideshow_type == 2:
+        if self.slideshow_type == SlideshowType.Image_Folder:
             hexfile = checksum(self.slideshow_path.encode('utf-8')) # check if path has changed, so we can create a new cache at startup
             log('image path: %s' % self.slideshow_path)
             log('update: %s' % update)
@@ -401,13 +417,13 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             #     if xbmcvfs.exists(CACHEFILE % hexfile):
             #         xbmcvfs.delete(CACHEFILE % hexfile)
 	    # video fanart
-        if self.slideshow_type == 0:
+        if self.slideshow_type == SlideshowType.Video_Fanart:
             methods = [('VideoLibrary.GetMovies', 'movies'), ('VideoLibrary.GetTVShows', 'tvshows')]
 	    # music fanart
-        elif self.slideshow_type == 1:
+        elif self.slideshow_type == SlideshowType.Music_Fanart:
             methods = [('AudioLibrary.GetArtists', 'artists')]
         # query the db
-        if not self.slideshow_type == 2:
+        if not self.slideshow_type == SlideshowType.Image_Folder:
             self.items = []
             for method in methods:
                 json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "' + method[0] + '", "params": {"properties": ["art"]}, "id": 1}')
@@ -416,28 +432,34 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                     for item in json_response['result'][method[1]]:
                         if 'fanart' in item['art']:
                             self.items.append([item['art']['fanart'], item['label']])
-        # randomize
+    # randomize
+    def _randomize(self, items):
         if self.slideshow_random:
-            random.seed()
-            random.shuffle(self.items, random.random)
+            random.seed(self.seed)
+            random.shuffle(items, random.random)
 
     def _get_offset(self):
         try:
-            offset = xbmcvfs.File(RESUMEFILE)
-            self.offset = int(offset.read())
-            offset.close()
-        except:
+            with xbmcvfs.File(RESUMEFILE) as f:
+                decoded = json.loads(f.read())
+                self.offset = decoded['position']
+                self.seed = decoded['seed']
+                log(f'Offset: {self.offset}')
+                log(f'Seed: {self.seed}')
+        except Exception as e:
+            log(f'failed to load resume point: {e}')
             self.offset = 0
+            self.seed = random.random()
 
     def _save_offset(self):
-        if not xbmcvfs.exists(CACHEFOLDER):
-            xbmcvfs.mkdir(CACHEFOLDER)
         try:
+            if not xbmcvfs.exists(CACHEFOLDER):
+                xbmcvfs.mkdir(CACHEFOLDER)
             offset = xbmcvfs.File(RESUMEFILE, 'w')
-            offset.write(str(self.position))
+            offset.write(json.dumps({'position': self.position, 'seed': self.seed}))
             offset.close()
-        except:
-            log('failed to save resume point')
+        except Exception as e:
+            log(f'failed to save resume point: {e}')
 
     def _read_cache(self, hexfile):
         try:
@@ -447,6 +469,14 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         except:
             images = []
         return images
+    def _write_cache(self, hexfile):
+        try:
+            cache = xbmcvfs.File(CACHEFILE % hexfile, 'w')
+            json.dump(self.items, cache)
+            cache.close()
+        except:
+            log('failed to save cachefile')
+
 
     def _anim(self, cur_img):
         # reset position the current image
@@ -523,7 +553,7 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         self._clear_prop('Splash')
         self._clear_prop('Background')
         # save the current position  to file
-        if self.slideshow_type == 2 and not self.slideshow_random and self.slideshow_resume:
+        if self.slideshow_type == SlideshowType.Image_Folder and self.slideshow_resume:
             self._save_offset()
         self.close()
 

@@ -1,6 +1,8 @@
+from enum import Enum
 import hashlib
 import os
 import json
+import random
 import re
 import sys
 import urllib
@@ -20,6 +22,11 @@ CACHEFILE = os.path.join(CACHEFOLDER, 'cache_%s')
 RESUMEFILE = os.path.join(CACHEFOLDER, 'offset')
 ASFILE = xbmcvfs.translatePath('special://profile/advancedsettings.xml')
 
+class SlideshowType(Enum):
+    Video_Fanart = 0
+    Music_Fanart = 1
+    Image_Folder = 2
+
 def log(txt):
     message = '%s: %s' % (ADDONID, txt)
     xbmc.log(msg=message, level=xbmc.LOGDEBUG)
@@ -27,7 +34,7 @@ def log(txt):
 def checksum(path):
     return hashlib.md5(path).hexdigest()
 
-def create_cache(path, hexfile):
+def create_cache(path, hexfile, randomize=False):
     images = walk(path)
     if not xbmcvfs.exists(CACHEFOLDER):
         xbmcvfs.mkdir(CACHEFOLDER)

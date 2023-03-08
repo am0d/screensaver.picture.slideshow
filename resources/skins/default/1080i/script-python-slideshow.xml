@@ -166,6 +166,15 @@
 				<animation effect="fade" end="95" condition="True">Conditional</animation>
 				<visible>String.IsEqual(Window.Property(SlideView.Overlay),show)</visible>
 			</control>
+			<control type="image" id="102"> <!-- text background -->
+				<posx>0</posx>
+				<posy>992</posy>
+				<width>1920</width>
+				<height>68</height>
+				<texture>text-background.png</texture>
+				<colordiffuse>80000000</colordiffuse>
+				<!-- <visible>False</visible> -->
+			</control>
 			<control type="label" id="99"> <!--name-->
 				<posx>1875</posx>
 				<posy>992</posy>
@@ -187,10 +196,7 @@
 				<shadowcolor>F0000000</shadowcolor>
 			</control>
 			<control type="textbox" id="101"> <!-- exif -->
-				<!-- <right>1875</posx>
-				<bottom>984</posy> -->
 				<posx>45</posx>
-				<!-- <posy>925</posy> -->
 				<posy>992</posy>
 				<width>auto</width>
 				<height>68</height>
