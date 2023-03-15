@@ -34,42 +34,57 @@ def log(txt):
 def checksum(path):
     return hashlib.md5(path).hexdigest()
 
-def create_cache(path, hexfile, randomize=False):
-    images = walk(path)
+def create_cache(path, hexfile, excludes):
+    log(f'- Walk {path}')
+    images = walk(path, excludes)
+    log(f'  - Found {len(images)} images')
     if not xbmcvfs.exists(CACHEFOLDER):
         xbmcvfs.mkdir(CACHEFOLDER)
     # remove old cache files
     dirs, files = xbmcvfs.listdir(CACHEFOLDER)
     for item in files:
         if item != 'settings.xml':
+            log(f'- Delete {os.path.join(CACHEFOLDER,item)}')
             xbmcvfs.delete(os.path.join(CACHEFOLDER,item))
     if images:
         # create cache file
         try:
-            cache = xbmcvfs.File(CACHEFILE % hexfile, 'w')
-            json.dump(images, cache)
-            cache.close()
+            log (f'- Open file {CACHEFILE % hexfile} for write')
+            with xbmcvfs.File(CACHEFILE % hexfile, 'w') as cache:
+                log(f'- Write images to cache')
+                json.dump(images, cache)
+                log(f'  - DONE')
         except:
             log('failed to save cachefile')
 
 def get_excludes():
     regexes = []
+    log(f'  - get_excludes:')
     if xbmcvfs.exists(ASFILE):
+        log(f'  - xbmcvfs.exists({ASFILE})')
         try:
             tree = etree.parse(ASFILE)
+            log(f'  - etree.parse({ASFILE})')
             root = tree.getroot()
+            log(f'  - tree.getroot()')
             excludes = root.find('pictureexcludes')
+            log(f'  - root.find("excludes"): {excludes}')
             if excludes is not None:
                 for expr in excludes:
+                    log(f'  - expr: {expr}')
+                    log(f'  - {expr.text}')
                     regexes.append(expr.text)
-        except:
+        except Exception as e:
+            log(f'  - Exception: {e}')
             pass
     return regexes
 
-def walk(path):
+def walk(path, excludes):
+    log(f'- walk({path})')
     images = []
     folders = []
-    excludes = get_excludes()
+    # excludes = get_excludes()
+    log(f'  - excludes: {excludes}')
     # multipath support
     if path.startswith('multipath://'):
         # get all paths from the multipath
@@ -78,7 +93,10 @@ def walk(path):
             folders.append(urllib.unquote_plus(item))
     else:
         folders.append(path)
+    log(f'  - folders: {folders}')
+    log(f'  - for folder in folders:')
     for folder in folders:
+        log(f'    - folder: {folder}')
         if xbmcvfs.exists(xbmcvfs.translatePath(folder)):
             dirs = []
             files = []
@@ -93,6 +111,7 @@ def walk(path):
                         elif item["filetype"] == "directory":
                             dirs.append(item["file"])
             else:
+                log(f'    - xbmcvfs.listdir({folder})')
                 dirs, files = xbmcvfs.listdir(folder)
             log('dirs: %s' % len(dirs))
             log('files: %s' % len(files))
@@ -135,9 +154,9 @@ def walk(path):
                     # recursively scan all subfolders
                     if not dirskip:
                         if item.startswith('plugin://'):
-                            images += walk(item)
+                            images += walk(item, excludes)
                         else:
-                            images += walk(os.path.join(folder,item,'')) # make sure paths end with a slash
+                            images += walk(os.path.join(folder,item,''), excludes) # make sure paths end with a slash
         else:
-            log('folder does not exist')
+            log(f'folder {xbmcvfs.translatePath(folder)} does not exist')
     return images

@@ -80,6 +80,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         # calculate the animation time
         speedup = 1 / float(effectslowdown)
         self.adj_time = int(101000 * speedup)
+        # load the excludes list once on the main thread, before loading the images
+        self._excludes = get_excludes()
         # get the images
         self._get_items()
         if self.slideshow_type == SlideshowType.Image_Folder and self.slideshow_resume:
@@ -386,13 +388,13 @@ class Screensaver(xbmcgui.WindowXMLDialog):
                 # slideshow time in secs (we already slept for 1 second)
                 count = self.slideshow_time - 1
                 # display the image for the specified amount of time
-                while (not self.Monitor.abortRequested()) and (not self.stop) and count > 0:
+                while (not self.Monitor.waitForAbort(1)) and (not self.stop) and count > 0:
                     count -= 1
-                    xbmc.sleep(1000)
                 # break out of the for loop if onScreensaverDeactivated is called
                 if  self.stop or self.Monitor.abortRequested():
                     break
                 self.position += 1
+                self._save_offset()
             self.offset = 0
             self.seed = random.random()
             items = copy.deepcopy(self.items)
@@ -408,7 +410,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
             log('update: %s' % update)
             if (not xbmcvfs.exists(CACHEFILE % hexfile)) or update: # create a new cache if no cache exits or during the background scan
                 log('create cache')
-                create_cache(self.slideshow_path, hexfile)
+                create_cache(self.slideshow_path, hexfile, self._excludes)
+                log(f' - DONE')
             self.items = self._read_cache(hexfile)
             log('items: %s' % len(self.items))
             # if not self.items:
@@ -455,9 +458,8 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         try:
             if not xbmcvfs.exists(CACHEFOLDER):
                 xbmcvfs.mkdir(CACHEFOLDER)
-            offset = xbmcvfs.File(RESUMEFILE, 'w')
-            offset.write(json.dumps({'position': self.position, 'seed': self.seed}))
-            offset.close()
+            with xbmcvfs.File(RESUMEFILE, 'w') as offset:
+                offset.write(json.dumps({'position': self.position, 'seed': self.seed}))
         except Exception as e:
             log(f'failed to save resume point: {e}')
 
@@ -469,14 +471,6 @@ class Screensaver(xbmcgui.WindowXMLDialog):
         except:
             images = []
         return images
-    def _write_cache(self, hexfile):
-        try:
-            cache = xbmcvfs.File(CACHEFILE % hexfile, 'w')
-            json.dump(self.items, cache)
-            cache.close()
-        except:
-            log('failed to save cachefile')
-
 
     def _anim(self, cur_img):
         # reset position the current image
@@ -570,11 +564,8 @@ class img_update(threading.Thread):
             # create a fresh index as quickly as possible after slidshow started
             self._get_items(True)
             count = 0
-            while count != 3600: # check for new images every hour
-                xbmc.sleep(1000)
+            while not self.Monitor.waitForAbort(10) and not self.stop and count < 3600: # check for new images every hour
                 count += 1
-                if self.Monitor.abortRequested() or self.stop:
-                    return
 
     def _exit(self):
         # exit when onScreensaverDeactivated gets called
